@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8 />
+    <title>Gateway</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: whitesmoke;
+            font-family: "Noto Sans", sans-serif;
+            color: #3d3d3d;
+        }
+
+        section {
+            width: 960px;
+            margin: 20px auto;
+        }
+
+        h1 {
+            width: 960px;
+            margin: 20px auto;
+            font-family: "Lora", serif;
+            letter-spacing: .04em;
+        }
+
+        h2 {
+            font-family: "Lora", serif;
+            letter-spacing: .04em;
+        }
+
+        p {
+            font-size: 1em;
+            line-height: 1.5em;
+        }
+
+        a {
+            color: #005daa;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        #map {
+            width: 960px;
+            height: 540px;
+            margin: 10px auto;
+            border: 2px solid #d3d3d3;
+        }
+
+        .icon:hover {
+            opacity: .8;
+          }
+
+        .leaflet-popup-content h3 {
+            font-family: "Lora", serif;
+            font-size: 1.3em;
+            margin-bottom: 6px;*/
+        }
+
+        .leaflet-popup-content p {
+            margin: 3px 0 6px;
+            font-size: 1.1em;*/
+        }
+
+        .leaflet-popup-content a {
+            font-weight: normal;*/
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Gateway National Recreation Area, Jamaica Bay Unit</h1>
+
+    <div id='map'></div>
+
+
+    <section>
+
+        <p>Map authored by digitalfootprints</p>
+
+        <p>Additional information about <a href="https://www.nps.gov/gate/index.htm">Gateway National Recreation Area</a> is available from the Unites States National Park Service.
+           Check out <a href="http://www.nycgo.com/maps-guides/free-in-nyc">Free In NYC</a> for more ideas on amazing free things to do in NYC.</p>
+
+    </section>
+
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map', {
+            center: [40.612150, -73.842888],
+            zoom: 12,
+        });
+
+        var tiles = L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        });
+        map.addLayer(tiles);
+
+
+        var hotspots = [{
+            name: "Jamaica Bay Wildlife Refuge",
+            properties: {
+                description: "Excellent year-long birding, especially for migrating species along the  Atlantic Coast flyway.",
+                coordinates: [40.616784, -73.82502],
+                url: 'https://www.nps.gov/gate/planyourvisit/thingstodojamaicabay.htm',
+                phone: '(718) 354-4606',
+                icon: 'svgs/wetland-15.svg'
+            }
+        }, {
+           name: "Floyd Bennet Field",
+           properties: {
+                 description: "Former municipal airport and Naval Air Station, the first solo round-the-world flight landed here.  Floyd Bennett Field is listed on the National Register of Historic Places.",
+                 coordinates: [40.590143, -73.891983],
+                 url: 'https://www.nps.gov/nr//travel/aviation/flo.htm',
+                 phone: 'U.S. Park Police (718) 338-3988',
+                 icon: 'svgs/airfield-15.svg'
+           }
+        }, {
+            name: "Jacob Riis Beach",
+            properties: {
+                description: "Beautiful, sandy, public beach and Art Deco bathhouse on the Atlantic Ocean.  Named for the famous photographer of How the Other Half Lives, which was instrumental in early housing reform.",
+                coordinates: [40.566158, -73.870182],
+                url: 'https://www.nps.gov/gate/learn/historyculture/jacob-riis-biography.htm',
+                phone: '(718) 318-4300',
+                icon: 'svgs/water-15.svg'
+            }
+        }, {
+          name: "Fort Tilden",
+          properties: {
+              description: "Visit decommissioned military buildings in the center of a reclaimed natural area. Nike Missiles were installed here during the Cold War to protect New York Harbor.",
+              coordinates: [40.561319, -73.893206],
+              url: 'https://www.nps.gov/gate/learn/historyculture/coldwartilden.htm',
+              phone: 'n/a',
+              icon: 'svgs/rocket-15.svg'
+            }
+        }, {
+          name: "Rockaway Beach",
+          properties: {
+              description: "Rock, Rock, Rockaway Beach...You know it from the Ramones' song, you could totally hitch a ride here from Gateway!. (Actually, hitch-hiking is dangerous; why would you take advice from the Ramones...)",
+              coordinates: [40.592170, -73.779030],
+              url: 'https://www.youtube.com/watch?v=nCJ_Lj2TXPk',
+              phone: 'n/a',
+              icon: 'svgs/music-15.svg'
+          }
+        }];
+
+        for (var i = 0; i < hotspots.length; i++) {
+
+          var props = hotspots[i].properties;
+
+          var popup = "<h3>" + hotspots[i].name + "</h3>" +
+                  "<p>" + props.description + "</p>" + //assign a string, wrapping the name of the place within two HTML bold tags
+                  "<p><b>website</b>:  <a href='" + props.url + "'>" + props.url + "</a><p>" +
+                  "<p><b>phone</>:  " + props.phone + "</p>";
+
+            var icon = L.icon({
+                iconUrl: props.icon,
+                iconSize: [40, 40],
+                popupAnchor: [0, -22],
+                className: 'icon'
+              });
+
+            var marker = L.marker(hotspots[i].properties.coordinates, {
+                icon: icon
+            }).addTo(map).bindPopup(popup);
+
+            marker.on('mouseover', function() {
+                this.openPopup();
+            });
+            marker.on('mouseout', function() {
+                this.closePopup();
+            })
+        }
+    </script>
+
+</body>
+
+</html>
